@@ -1,11 +1,15 @@
+using Assets.Scripts.Trainer;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleController : MonoBehaviour
 {
-    [SerializeField] Pokemon player1Pokemon;
-    [SerializeField] Pokemon player2Pokemon;
+    [SerializeField] Player player1;
+    [SerializeField] NPCSO player2;
+
+    public Pokemon player1Pokemon;
+    public Pokemon player2Pokemon;
 
     [SerializeField] Weather weather;
     [SerializeField] int weatherTurnLeft;
@@ -13,19 +17,78 @@ public class BattleController : MonoBehaviour
     [SerializeField] Hazard player1Hazard;
     [SerializeField] Hazard player2Hazard;
 
+    private List<TurnMove> turnMoveList = new();
 
-    public void AddTurnAction()
+    public Player Player1 { get => player1; set => player1 = value; }
+    public NPCSO Player2 { get => player2; set => player2 = value; }
+    public Pokemon Player1Pokemon { get => player1Pokemon; set => player1Pokemon = value; }
+    public Pokemon Player2Pokemon { get => player2Pokemon; set => player2Pokemon = value; }
+    public Weather Weather { get => weather; set => weather = value; }
+    public int WeatherTurnLeft { get => weatherTurnLeft; set => weatherTurnLeft = value; }
+    public Hazard Player1Hazard { get => player1Hazard; set => player1Hazard = value; }
+    public Hazard Player2Hazard { get => player2Hazard; set => player2Hazard = value; }
+
+    private void Start()
     {
+        SetOnFieldPokemon(ref player1.Party[0], ref player2.Party[0]);//==================================
+        //player1Pokemon = player1.Party[0];
+        player1Pokemon.InitStats();
 
+        //Debug.Log("***" + player1Pokemon + " || " + player1.Party[0]);
+
+        //player2Pokemon = player2.Party[0];
+        player2Pokemon.InitStats();
+
+        //player1Pokemon.Hp -= 10;
+        //Debug.Log("***" + player1Pokemon);
+        //Debug.Log("***" + player1.Party[0]);
+    }
+
+    private void SetOnFieldPokemon(ref Pokemon player1Pokemon, ref Pokemon player2Pokemon)
+    {
+        Player1Pokemon = player1Pokemon;
+        Player2Pokemon = player2Pokemon;
+    }
+
+    public void AddTurnAction(ref Pokemon attacker, ref Pokemon target, MoveSO move)
+    {
+        turnMoveList.Add(new TurnMove(move, ref attacker, ref target));
     }
     public void ExecuteTurn()
     {
+        //Debug.Log("***" + player1Pokemon);
+        //Debug.Log("***" + player1.Party[0]);
+
         //On enter turn event (weather...)
+        player1Pokemon.UpdateStats();
+        player2Pokemon.UpdateStats();
 
         //Pokemon move event
-
+        Debug.Log(turnMoveList.Count);
+        for (int i = 0; i < turnMoveList.Count; i++)
+        {
+            if (turnMoveList[i].move.MovePower > 0)
+            {
+                Debug.Log(turnMoveList[i].move + " | " + turnMoveList[i].target);
+                DoMoveDamage(ref turnMoveList[i].target, CalculateDamage(turnMoveList[i].attacker, turnMoveList[i].target, turnMoveList[i].move));
+            }
+        }
         //End turn event (burn, poison, leftover, ...)
 
+        turnMoveList.Clear();
+
+    }
+
+    public void DoMoveDamage(ref Pokemon target, int damage)
+    {
+        Debug.Log(damage + " | " + target.Hp);
+        target.Hp -= damage;
+        
+    }
+
+    public void DoMoveEffect(ref Pokemon attacker, ref Pokemon target, MoveSO move)
+    {
+        move.MoveEffect.DoEffect(attacker, target, move);
     }
 
     public int CalculateDamage(Pokemon attacker, Pokemon target, MoveSO move)
@@ -39,19 +102,19 @@ public class BattleController : MonoBehaviour
 
         if (move.MoveCategory == MoveCategory.Physical)
         {
-            A = attacker.GetBuffLevel(StatName.Atk);
-            D = target.GetBuffLevel(StatName.Def);
+            A = attacker.GetBuffLevel(Stats.Atk);
+            D = target.GetBuffLevel(Stats.Def);
         }
         else if (move.MoveCategory == MoveCategory.Special)
         {
-            A = attacker.GetBuffLevel(StatName.SpA);
-            D = target.GetBuffLevel(StatName.SpD);
+            A = attacker.GetBuffLevel(Stats.SpA);
+            D = target.GetBuffLevel(Stats.SpD);
         }
 
         float targets = 1;
 
         float weather = 1;
-        if (this.weather == Weather.HarshSunlight)
+        if (this.Weather == Weather.HarshSunlight)
         {
             if (move.MoveType == PokemonType.Fire)
             {
@@ -62,7 +125,7 @@ public class BattleController : MonoBehaviour
                 weather = 0.5f;
             }
         }
-        else if (this.weather == Weather.Rain)
+        else if (this.Weather == Weather.Rain)
         {
             if (move.MoveType == PokemonType.Fire)
             {
@@ -76,7 +139,7 @@ public class BattleController : MonoBehaviour
 
         float critical = 1;
         float critRate = 6.25f;
-        switch (attacker.GetBuffLevel(StatName.Crit))
+        switch (attacker.GetBuffLevel(Stats.Crit))
         {
             case 1:
                 critRate = 6.25f;
@@ -102,7 +165,7 @@ public class BattleController : MonoBehaviour
             critical = 1.5f;
         }
 
-        float random = (Random.Range(85, 100)) / 100;
+        float random = (Random.Range(85, 100)) / 100f;
 
         float stab = 1;
         if (attacker.PokemonBaseSO.Type1 == move.MoveType || attacker.PokemonBaseSO.Type2 == move.MoveType)
@@ -125,9 +188,25 @@ public class BattleController : MonoBehaviour
 
         damage = (((((2 * level) / 5) + 2) * power * (A / D)) / 50 + 2)
             * targets * weather * critical * random * stab * typeEffectiveness * burn * other;
-
+        Debug.Log(level + " | " + targets + " | " + weather + " | " + critical + " | " + random + " | " + stab + " | " + typeEffectiveness + " | " + burn + " | " + other);
         return (int)damage;
     }
+
+}
+
+public class TurnMove
+{
+    public MoveSO move;
+    public Pokemon attacker;
+    public Pokemon target;
+
+    public TurnMove(MoveSO move, ref Pokemon attacker, ref Pokemon target)
+    {
+        this.move = move;
+        this.attacker = attacker;
+        this.target = target;
+    }
+
 
 }
 

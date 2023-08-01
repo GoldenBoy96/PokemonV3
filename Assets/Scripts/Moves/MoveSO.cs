@@ -15,7 +15,7 @@ public class MoveSO : ScriptableObject
     [SerializeField] private MoveCategory moveCategory;
     [TextArea]
     [SerializeField] private string moveDescription;
-    private MoveEffect moveEffect;
+    private IMoveEffect moveEffect;
     [SerializeField] private GameObject moveEffectObject;
     [SerializeField] private GameObject sprite;
 
@@ -28,7 +28,7 @@ public class MoveSO : ScriptableObject
     public int MoveAccuracy { get => moveAccuracy; set => moveAccuracy = value; }
     public MoveCategory MoveCategory { get => moveCategory; set => moveCategory = value; }
     public string MoveDescription { get => moveDescription; set => moveDescription = value; }
-    public MoveEffect MoveEffect { get => moveEffect; set => moveEffect = moveEffectObject.GetComponent<MoveEffect>(); }
+    public IMoveEffect MoveEffect { get => moveEffect; set => moveEffect = moveEffectObject.GetComponent<IMoveEffect>(); }
     public GameObject MoveEffectObject { get => moveEffectObject; set => moveEffectObject = value; }
     public GameObject Sprite { get => sprite; set => sprite = value; }
 }

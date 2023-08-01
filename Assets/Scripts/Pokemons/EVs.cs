@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class EVs
 {
-    private int hp;
-    private int atk;
-    private int def;
-    private int spA;
-    private int spD;
-    private int spe;
+    private int hp = 0;
+    private int atk = 0;
+    private int def = 0;
+    private int spA = 0;
+    private int spD = 0;
+    private int spe = 0;
 
     public int Hp { get => hp; set => hp = value; }
     public int Atk { get => atk; set => atk = value; }

@@ -113,6 +113,13 @@ public enum Status
 
 }
 
+public enum Gender
+{
+    Male,
+    Female,
+    Unknown
+}
+
 public enum Nature
 {
     Adamant,
@@ -142,9 +149,9 @@ public enum Nature
     Timid,
 }
 
-public enum StatName
+public enum Stats
 {
-    Hp, Atk, Def, SpA, SpD, Spe, Crit
+    Hp, Atk, Def, SpA, SpD, Spe, Crit, Acc
 }
 
 public enum Weather

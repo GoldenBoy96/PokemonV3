@@ -53,6 +53,11 @@ public class PokemonBaseSO : ScriptableObject
     public GameObject BackSprite { get => backSprite; set => backSprite = value; }
     public GameObject FrontSprite { get => frontSprite; set => frontSprite = value; }
     public GameObject IconSprite { get => iconSprite; set => iconSprite = value; }
+
+    public override string ToString()
+    {
+        return $"{{{nameof(PokemonName)}={PokemonName}, {nameof(BaseHp)}={BaseHp.ToString()}, {nameof(BaseAtk)}={BaseAtk.ToString()}, {nameof(BaseDef)}={BaseDef.ToString()}, {nameof(BaseSpA)}={BaseSpA.ToString()}, {nameof(BaseSpD)}={BaseSpD.ToString()}, {nameof(BaseSpe)}={BaseSpe.ToString()}, {nameof(Abilities)}={Abilities}, {nameof(LevelUpMoves)}={LevelUpMoves}, {nameof(TmMoves)}={TmMoves}, {nameof(HmMoves)}={HmMoves}, {nameof(Description)}={Description}, {nameof(Type1)}={Type1.ToString()}, {nameof(Type2)}={Type2.ToString()}, {nameof(PokedexNo)}={PokedexNo.ToString()}, {nameof(EvYield)}={EvYield.ToString()}, {nameof(CatchRate)}={CatchRate.ToString()}, {nameof(NextEvolution)}={NextEvolution.ToString()}, {nameof(BackSprite)}={BackSprite}, {nameof(FrontSprite)}={FrontSprite}, {nameof(IconSprite)}={IconSprite}}}";
+    }
 }
 
 [Serializable]
@@ -73,10 +78,10 @@ public struct LevelUpMove
 public struct EvYield
 {
     [SerializeField] private int amount;
-    [SerializeField] private StatName stat;
+    [SerializeField] private Stats stat;
 
     public int Amount { get => amount; set => amount = value; }
-    public StatName Stat { get => stat; set => stat = value; }
+    public Stats Stat { get => stat; set => stat = value; }
 }
 
 

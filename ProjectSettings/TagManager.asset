@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Structure
+  - Tree
+  - Water
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -11,7 +15,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - SolidObjectLayer
   - 
   - 
   - 
@@ -41,12 +45,33 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Background
+  - name: Ground
+    uniqueID: 3410496141
+    locked: 0
+  - name: Water
+    uniqueID: 2680049165
+    locked: 0
+  - name: Structure
+    uniqueID: 1799042965
+    locked: 0
+  - name: Decoration
+    uniqueID: 1846787455
+    locked: 0
+  - name: Tree
+    uniqueID: 1054428023
+    locked: 0
+  - name: Player
+    uniqueID: 1732885663
+    locked: 0
+  - name: BattleBackground
     uniqueID: 655264931
     locked: 0
-  - name: Pokemon
+  - name: BattlePokemon
     uniqueID: 3035864039
     locked: 0
-  - name: UI
+  - name: BatlleUI
     uniqueID: 4005620861
+    locked: 0
+  - name: Test
+    uniqueID: 451726507
     locked: 0

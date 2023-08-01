@@ -1,16 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pokemon : MonoBehaviour
+[Serializable]
+public class Pokemon
 {
-    private PokemonBaseSO pokemonBaseSO;
+    [SerializeField] private PokemonBaseSO pokemonBaseSO;
 
-    private int level;
-    private IVs ivs;
-    private EVs evs;
-    private Nature nature;
-    private Gender gender;
+    [SerializeField] private int level = 1;
+    [SerializeField] private IVs ivs = new();
+    [SerializeField] private EVs evs = new();
+    [SerializeField] private Nature nature = Nature.Adamant;
+    [SerializeField] private Gender gender = Gender.Male;
 
     private int maxHp;
     private int hp;
@@ -20,18 +22,47 @@ public class Pokemon : MonoBehaviour
     private int spD;
     private int spe;
 
-    private AbilitySO ability;
-    private List<LearnedMove> moveset;
+    [SerializeField] private AbilitySO ability;
+    [SerializeField] private List<LearnedMove> moveset = new();
 
-    private int totaXp;
+    private int totalXp;
     private int toNextLevelXp;
 
-    private ItemSO holdItem;
+    [SerializeField] private ItemSO holdItem;
 
-    private ItemSO pokeball;
+    [SerializeField] private ItemSO pokeball;
 
-    private List<Buff> buffList;
-    private Status status = Status.None;
+    [SerializeField] private List<Buff> buffList = new();
+    [SerializeField] private Status status = Status.None;
+
+    public Pokemon()
+    {
+        //ivs ??= new();
+        //evs ??= new();
+
+
+    }
+
+    public void InitStats()
+    {
+        MaxHp = CalculateStat(Stats.Hp, PokemonBaseSO.BaseHp, Level, Ivs.Hp, Evs.Hp);
+        Hp = MaxHp;
+        Atk = CalculateStat(Stats.Atk, PokemonBaseSO.BaseAtk, Level, Ivs.Atk, Evs.Atk);
+        Def = CalculateStat(Stats.Def, PokemonBaseSO.BaseDef, Level, Ivs.Def, Evs.Def);
+        SpA = CalculateStat(Stats.SpA, PokemonBaseSO.BaseSpA, Level, Ivs.SpA, Evs.SpA);
+        SpD = CalculateStat(Stats.SpD, PokemonBaseSO.BaseSpD, Level, Ivs.SpD, Evs.SpD);
+        Spe = CalculateStat(Stats.Spe, PokemonBaseSO.BaseSpe, Level, Ivs.Spe, Evs.Spe);
+    }
+
+    public void UpdateStats()
+    {
+        MaxHp = CalculateStat(Stats.Hp, PokemonBaseSO.BaseHp, Level, Ivs.Hp, Evs.Hp);
+        Atk = CalculateStat(Stats.Atk, PokemonBaseSO.BaseAtk, Level, Ivs.Atk, Evs.Atk);
+        Def = CalculateStat(Stats.Def, PokemonBaseSO.BaseDef, Level, Ivs.Def, Evs.Def);
+        SpA = CalculateStat(Stats.SpA, PokemonBaseSO.BaseSpA, Level, Ivs.SpA, Evs.SpA);
+        SpD = CalculateStat(Stats.SpD, PokemonBaseSO.BaseSpD, Level, Ivs.SpD, Evs.SpD);
+        Spe = CalculateStat(Stats.Spe, PokemonBaseSO.BaseSpe, Level, Ivs.Spe, Evs.Spe);
+    }
 
     public PokemonBaseSO PokemonBaseSO { get => pokemonBaseSO; set => pokemonBaseSO = value; }
     public int Level { get => level; set => level = value; }
@@ -48,14 +79,14 @@ public class Pokemon : MonoBehaviour
     public int Spe { get => spe; set => spe = value; }
     public AbilitySO Ability { get => ability; set => ability = value; }
     public List<LearnedMove> Moveset { get => moveset; set => moveset = value; }
-    public int TotaXp { get => totaXp; set => totaXp = value; }
+    public int TotalXp { get => totalXp; set => totalXp = value; }
     public int ToNextLevelXp { get => toNextLevelXp; set => toNextLevelXp = value; }
     public ItemSO HoldItem { get => holdItem; set => holdItem = value; }
     public ItemSO Pokeball { get => pokeball; set => pokeball = value; }
     public List<Buff> BuffList { get => buffList; set => buffList = value; }
     public Status Status { get => status; set => status = value; }
 
-    public float GetBuffLevel(StatName stat)
+    public float GetBuffLevel(Stats stat)
     {
         foreach (var buff in BuffList)
         {
@@ -66,31 +97,51 @@ public class Pokemon : MonoBehaviour
         }
         return 1f;
     }
+
+    private int CalculateStat(Stats stats, int baseStat, int level, int iv, int ev)
+    {
+        int value = 0;
+        if (stats.Equals(Stats.Hp))
+        {
+            value = ((2 * baseStat + iv + (ev / 4) * level) * level / 100) + level + 10;
+        }
+        else
+        {
+            value = (((2 * baseStat + iv + (ev / 4) * level) * level / 100) + 5);
+
+        }
+
+        return value;
+    }
+
+    public override string ToString()
+    {
+        return $"{{{nameof(PokemonBaseSO)}={PokemonBaseSO.PokemonName}, {nameof(Level)}={Level.ToString()}, {nameof(Ivs)}={Ivs}, {nameof(Evs)}={Evs}, {nameof(Nature)}={Nature.ToString()}, {nameof(Gender)}={Gender.ToString()}, {nameof(MaxHp)}={MaxHp.ToString()}, {nameof(Hp)}={Hp.ToString()}, {nameof(Atk)}={Atk.ToString()}, {nameof(Def)}={Def.ToString()}, {nameof(SpA)}={SpA.ToString()}, {nameof(SpD)}={SpD.ToString()}, {nameof(Spe)}={Spe.ToString()}, {nameof(Ability)}={Ability}, {nameof(Moveset)}={Moveset}, {nameof(TotalXp)}={TotalXp.ToString()}, {nameof(ToNextLevelXp)}={ToNextLevelXp.ToString()}, {nameof(HoldItem)}={HoldItem}, {nameof(Pokeball)}={Pokeball}, {nameof(BuffList)}={BuffList}, {nameof(Status)}={Status.ToString()}}}";
+    }
 }
 
+[Serializable]
 public struct LearnedMove
 {
-    MoveSO move;
-    int currentPp;
-    int maxPp;
+    [SerializeField] MoveSO move;
+    [SerializeField] int currentPp;
+    [SerializeField] int maxPp;
 
     public MoveSO Move { get => move; set => move = value; }
     public int CurrentPp { get => currentPp; set => currentPp = value; }
     public int MaxPp { get => maxPp; set => maxPp = value; }
 }
 
-public enum Gender
-{
-    Male,
-    Female
-}
+
+
+
 
 public struct Buff
 {
-    StatName stat;
+    Stats stat;
     int buffLevel; //1 level = +0.5f * total
 
-    public StatName Stat { get => stat; set => stat = value; }
+    public Stats Stat { get => stat; set => stat = value; }
     public int BuffLevel { get => buffLevel; set => buffLevel = value; }
 }
 
