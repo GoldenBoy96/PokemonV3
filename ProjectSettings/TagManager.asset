@@ -16,8 +16,8 @@ TagManager:
   - Water
   - UI
   - SolidObjectLayer
-  - 
-  - 
+  - PokemonSpawner
+  - Player
   - 
   - 
   - 
@@ -57,11 +57,14 @@ TagManager:
   - name: Decoration
     uniqueID: 1846787455
     locked: 0
-  - name: Tree
-    uniqueID: 1054428023
-    locked: 0
   - name: Player
     uniqueID: 1732885663
+    locked: 0
+  - name: TopStructure
+    uniqueID: 4266339973
+    locked: 0
+  - name: Tree
+    uniqueID: 1054428023
     locked: 0
   - name: BattleBackground
     uniqueID: 655264931
@@ -74,4 +77,7 @@ TagManager:
     locked: 0
   - name: Test
     uniqueID: 451726507
+    locked: 0
+  - name: Collider
+    uniqueID: 264014649
     locked: 0
