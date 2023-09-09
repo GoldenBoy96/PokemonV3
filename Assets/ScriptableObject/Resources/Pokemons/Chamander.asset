@@ -20,12 +20,12 @@ MonoBehaviour:
   baseSpD: 0
   baseSpe: 0
   abilities: []
-  levelUpMoves: []
-  tmMoves: []
-  hmMoves: []
   description: 
   type1: 18
   type2: 0
+  levelUpMoves: []
+  tmMoves: []
+  hmMoves: []
   pokedexNo: 0
   evYield:
     amount: 0
@@ -34,6 +34,6 @@ MonoBehaviour:
   nextEvolution:
     pokemonBaseSO: {fileID: 0}
     level: 0
-  backSprite: {fileID: 0}
-  frontSprite: {fileID: 0}
+  backSprite: {fileID: 4085774001912482546, guid: 70dfbcd964d684b4a81380f374553b7f, type: 3}
+  frontSprite: {fileID: 7749012045309854429, guid: eb89977f10c875c4788bce43609b10f7, type: 3}
   iconSprite: {fileID: 0}

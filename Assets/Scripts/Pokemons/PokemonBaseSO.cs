@@ -72,6 +72,9 @@ public struct LevelUpMove
 {
     [SerializeField] private MoveSO moveSO;
     [SerializeField] private int level;
+
+    public MoveSO MoveSO { get => moveSO; set => moveSO = value; }
+    public int Level { get => level; set => level = value; }
 }
 
 [Serializable]

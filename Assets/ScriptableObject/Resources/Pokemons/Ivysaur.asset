@@ -34,6 +34,6 @@ MonoBehaviour:
   nextEvolution:
     pokemonBaseSO: {fileID: 0}
     level: 0
-  backSprite: {fileID: 0}
-  frontSprite: {fileID: 0}
+  backSprite: {fileID: 1431397689046588067, guid: c146b70b35c61d64baac8b8a8c56deeb, type: 3}
+  frontSprite: {fileID: 622491470221316314, guid: 967793b2b24194042a5ab2c70df3e85e, type: 3}
   iconSprite: {fileID: 0}

@@ -2,12 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [Serializable]
 public class Pokemon
 {
     [SerializeField] private PokemonBaseSO pokemonBaseSO;
 
+    [SerializeField] private String nameString;
     [SerializeField] private int level = 1;
     [SerializeField] private IVs ivs = new();
     [SerializeField] private EVs evs = new();
@@ -35,35 +37,6 @@ public class Pokemon
     [SerializeField] private List<Buff> buffList = new();
     [SerializeField] private Status status = Status.None;
 
-    public Pokemon()
-    {
-        //ivs ??= new();
-        //evs ??= new();
-
-
-    }
-
-    public void InitStats()
-    {
-        MaxHp = CalculateStat(Stats.Hp, PokemonBaseSO.BaseHp, Level, Ivs.Hp, Evs.Hp);
-        Hp = MaxHp;
-        Atk = CalculateStat(Stats.Atk, PokemonBaseSO.BaseAtk, Level, Ivs.Atk, Evs.Atk);
-        Def = CalculateStat(Stats.Def, PokemonBaseSO.BaseDef, Level, Ivs.Def, Evs.Def);
-        SpA = CalculateStat(Stats.SpA, PokemonBaseSO.BaseSpA, Level, Ivs.SpA, Evs.SpA);
-        SpD = CalculateStat(Stats.SpD, PokemonBaseSO.BaseSpD, Level, Ivs.SpD, Evs.SpD);
-        Spe = CalculateStat(Stats.Spe, PokemonBaseSO.BaseSpe, Level, Ivs.Spe, Evs.Spe);
-    }
-
-    public void UpdateStats()
-    {
-        MaxHp = CalculateStat(Stats.Hp, PokemonBaseSO.BaseHp, Level, Ivs.Hp, Evs.Hp);
-        Atk = CalculateStat(Stats.Atk, PokemonBaseSO.BaseAtk, Level, Ivs.Atk, Evs.Atk);
-        Def = CalculateStat(Stats.Def, PokemonBaseSO.BaseDef, Level, Ivs.Def, Evs.Def);
-        SpA = CalculateStat(Stats.SpA, PokemonBaseSO.BaseSpA, Level, Ivs.SpA, Evs.SpA);
-        SpD = CalculateStat(Stats.SpD, PokemonBaseSO.BaseSpD, Level, Ivs.SpD, Evs.SpD);
-        Spe = CalculateStat(Stats.Spe, PokemonBaseSO.BaseSpe, Level, Ivs.Spe, Evs.Spe);
-    }
-
     public PokemonBaseSO PokemonBaseSO { get => pokemonBaseSO; set => pokemonBaseSO = value; }
     public int Level { get => level; set => level = value; }
     public IVs Ivs { get => ivs; set => ivs = value; }
@@ -85,6 +58,80 @@ public class Pokemon
     public ItemSO Pokeball { get => pokeball; set => pokeball = value; }
     public List<Buff> BuffList { get => buffList; set => buffList = value; }
     public Status Status { get => status; set => status = value; }
+    public string NameString { get => nameString; set => nameString = value; }
+
+    public Pokemon()
+    {
+        //ivs ??= new();
+        //evs ??= new();
+
+
+    }
+
+    public Pokemon(PokemonBaseSO pokemonBaseSO, int level)
+    {
+        this.pokemonBaseSO = pokemonBaseSO;
+        this.level = level;
+        int levelMoveIndex = 0;
+        int randomLearnableMove = 0;
+        for (int i = 0; i < pokemonBaseSO.LevelUpMoves.Count; i++)
+        {
+            if (level >= pokemonBaseSO.LevelUpMoves[i].Level)
+            {
+                levelMoveIndex = i;
+            }
+        }
+
+        if (levelMoveIndex < 4)
+        {
+            for (int i = 0; i < levelMoveIndex; i++)
+            {
+                moveset.Add(new LearnedMove(pokemonBaseSO.LevelUpMoves[i].MoveSO));
+            }
+        }
+        else
+        {
+            List<int> learnedMoveIndex = new();
+            for (int i = 0; i < 4; i++)
+            {
+                do
+                {
+                    randomLearnableMove = Random.Range(0, levelMoveIndex);
+                } while (learnedMoveIndex.Contains(randomLearnableMove));
+
+                moveset.Add(new LearnedMove(pokemonBaseSO.LevelUpMoves[randomLearnableMove].MoveSO));
+            }
+        }
+        InitStats();
+    }
+
+    public void InitStats()
+    {
+        if (NameString == null || NameString.Trim().Equals(""))
+        {
+            this.nameString = pokemonBaseSO.PokemonName;
+        }
+
+        MaxHp = CalculateStat(Stats.Hp, PokemonBaseSO.BaseHp, Level, Ivs.Hp, Evs.Hp);
+        Hp = MaxHp;
+        Atk = CalculateStat(Stats.Atk, PokemonBaseSO.BaseAtk, Level, Ivs.Atk, Evs.Atk);
+        Def = CalculateStat(Stats.Def, PokemonBaseSO.BaseDef, Level, Ivs.Def, Evs.Def);
+        SpA = CalculateStat(Stats.SpA, PokemonBaseSO.BaseSpA, Level, Ivs.SpA, Evs.SpA);
+        SpD = CalculateStat(Stats.SpD, PokemonBaseSO.BaseSpD, Level, Ivs.SpD, Evs.SpD);
+        Spe = CalculateStat(Stats.Spe, PokemonBaseSO.BaseSpe, Level, Ivs.Spe, Evs.Spe);
+    }
+
+    public void UpdateStats()
+    {
+        MaxHp = CalculateStat(Stats.Hp, PokemonBaseSO.BaseHp, Level, Ivs.Hp, Evs.Hp);
+        Atk = CalculateStat(Stats.Atk, PokemonBaseSO.BaseAtk, Level, Ivs.Atk, Evs.Atk);
+        Def = CalculateStat(Stats.Def, PokemonBaseSO.BaseDef, Level, Ivs.Def, Evs.Def);
+        SpA = CalculateStat(Stats.SpA, PokemonBaseSO.BaseSpA, Level, Ivs.SpA, Evs.SpA);
+        SpD = CalculateStat(Stats.SpD, PokemonBaseSO.BaseSpD, Level, Ivs.SpD, Evs.SpD);
+        Spe = CalculateStat(Stats.Spe, PokemonBaseSO.BaseSpe, Level, Ivs.Spe, Evs.Spe);
+    }
+
+
 
     public float GetBuffLevel(Stats stat)
     {
@@ -126,6 +173,19 @@ public struct LearnedMove
     [SerializeField] MoveSO move;
     [SerializeField] int currentPp;
     [SerializeField] int maxPp;
+
+    public LearnedMove(MoveSO move) : this()
+    {
+        this.move = move;
+        maxPp = move.MovePp;
+        currentPp = maxPp;
+    }
+    public LearnedMove(MoveSO move, int currentPp, int maxPp)
+    {
+        this.move = move;
+        this.currentPp = currentPp;
+        this.maxPp = maxPp;
+    }
 
     public MoveSO Move { get => move; set => move = value; }
     public int CurrentPp { get => currentPp; set => currentPp = value; }

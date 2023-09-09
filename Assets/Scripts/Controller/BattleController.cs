@@ -5,11 +5,16 @@ using UnityEngine;
 
 public class BattleController : MonoBehaviour
 {
+    public static BattleController Instance { get; private set; }
+
     [SerializeField] Player player1;
     [SerializeField] NPCSO player2;
 
     public Pokemon player1Pokemon;
     public Pokemon player2Pokemon;
+
+    public GameObject player1PokemonSprite;
+    public GameObject player2PokemonSprite;
 
     [SerializeField] Weather weather;
     [SerializeField] int weatherTurnLeft;
@@ -28,9 +33,22 @@ public class BattleController : MonoBehaviour
     public Hazard Player1Hazard { get => player1Hazard; set => player1Hazard = value; }
     public Hazard Player2Hazard { get => player2Hazard; set => player2Hazard = value; }
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        DontDestroyOnLoad(gameObject);
+
+    }
     private void Start()
     {
-        SetOnFieldPokemon(ref player1.Party[0], ref player2.Party[0]);//==================================
+        //SetOnFieldPokemon(ref player1.Party[0], ref player2.Party[0]);//==================================
         //player1Pokemon = player1.Party[0];
         player1Pokemon.InitStats();
 
@@ -42,12 +60,49 @@ public class BattleController : MonoBehaviour
         //player1Pokemon.Hp -= 10;
         //Debug.Log("***" + player1Pokemon);
         //Debug.Log("***" + player1.Party[0]);
+        
     }
 
+    public void HandleUpdate()
+    {
+       
+    }
+
+    public void StartWildPokemonBattle(Pokemon pokemon)
+    {
+        SetOnFieldPokemon(ref player1.Party[0], ref pokemon);
+        //player2Pokemon = pokemon;
+        player2 = null;
+        BattleUI.Instance.StartBattle();
+    }
     private void SetOnFieldPokemon(ref Pokemon player1Pokemon, ref Pokemon player2Pokemon)
     {
         Player1Pokemon = player1Pokemon;
         Player2Pokemon = player2Pokemon;
+        ChangePlayer1PokemonSprite(player1Pokemon.PokemonBaseSO);
+        ChangePlayer2PokemonSprite(player2Pokemon.PokemonBaseSO);
+
+    }
+
+    private void ChangePlayer1PokemonSprite(PokemonBaseSO pokemonBase)
+    {
+        foreach (Transform child in player1PokemonSprite.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        GameObject pokemonSprite = Instantiate(pokemonBase.BackSprite, player1PokemonSprite.transform);
+        pokemonSprite.GetComponent<RectTransform>().anchoredPosition3D = Vector3.zero;
+        
+    }
+
+    private void ChangePlayer2PokemonSprite(PokemonBaseSO pokemonBase)
+    {
+        foreach (Transform child in player2PokemonSprite.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        GameObject pokemonSprite = Instantiate(pokemonBase.FrontSprite, player2PokemonSprite.transform);
+        pokemonSprite.GetComponent<RectTransform>().anchoredPosition3D = Vector3.zero;
     }
 
     public void AddTurnAction(ref Pokemon attacker, ref Pokemon target, MoveSO move)
